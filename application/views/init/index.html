@@ -1,0 +1,58 @@
+{extends file="../layout/default.html"}
+
+{* ページタイトル *}
+{block name=title}My Admin{/block}
+{block name=content_title}My Admin{/block}
+
+{block name=content}
+<div class="container">
+	{* MySQLモジュールのエラーメッセージ *}
+	{if $error['mysql_module_error'] nocache=true}
+	<div class="alert alert-danger" style="margin:20px 20px;">
+		<div>phpのMySQLモジュールがインストールされていない可能性があります</div>
+		<div>またインストール後はApacheの再起動を行ってください</div>
+	</div>
+	{/if}
+
+	{* データベース接続のエラーメッセージ *}
+	{if $error['mysql_connect_error'] nocache=true}
+	<div class="alert alert-danger" style="margin:20px 20px;">
+		<div>データベースに接続することができませんでした</div>
+		<div>MySQLサービスが起動していることを確認してください</div>
+	</div>
+	{/if}
+
+	{* データベース選択のメッセージ *}
+	{if $error['mysql_select_database'] == false nocache=true}
+		{* データベース作成のメッセージ *}
+		{if $error['mysql_create_database'] nocache=true}
+		<div class="alert alert-info" style="margin:20px 20px;">
+			<div>データベースを作成しました</div>
+		</div>
+			{* テーブルの作成 *}
+			{if $error['mysql_create_table'] nocache=true}
+			<div class="alert alert-info" style="margin:20px 20px;">
+				<div>テーブルを作成しました</div>
+			</div>
+			{else}
+			<div class="alert alert-danger" style="margin:20px 20px;">
+				<div>テーブルの作成に失敗しました</div>
+			</div>
+			{/if}
+		{else}
+		<div class="alert alert-danger" style="margin:20px 20px;">
+			<div>データベースを作成するこができませんでした</div>
+			<div>ユーザーの権限を確認してください</div>
+		</div>
+		{/if}
+	{/if}
+
+	{* サブミットフォーム *}
+	<div>
+		<form class="form-inline" method="post" style="margin:0px 20px;">
+			<button type="submit" class="btn btn-primary pull-right">再確認</button>
+		</form>
+	</div>
+</div>
+{/block}
+

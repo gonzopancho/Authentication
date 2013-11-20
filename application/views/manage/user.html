@@ -1,0 +1,53 @@
+{extends file="../layout/default.html"}
+
+{* ページタイトル *}
+{block name=title}端末登録{/block}
+
+{block name=content}
+{* サブミットフォーム *}
+<div class="container">
+<nav class="navbar navbar-default" role="navigation">
+	<div class="navbar-header">
+		<a class="navbar-brand">端末情報管理</a>
+	</div>
+
+	<ul class="nav navbar-nav navbar-right">
+		<li>
+			<form class="navbar-form">
+				<a class="btn btn-default" href="index.php/manage/user" disabled>新規ユーザー登録</a>
+			</form>
+		</li>
+	</ul>
+</nav>
+
+<hr>
+
+<table class="table table-bordered">
+<thead>
+	<th>#</th>
+	<th>ユーザー名</th>
+	<th>端末制限数</th>
+	<th>制限</th>
+</thead>
+
+<tbody>
+	{if $users|@count == 0}
+	<tr>
+		<td colspan="4">現在登録されている端末はありません...</td>
+	</tr>
+	{else}
+		{foreach from=$users item=user}
+		<tr>
+			<td>{$user->id}</td>
+			<td>{$user->name}</td>
+			<td>{$user->limit}</td>
+			<td>
+				<a class="btn btn-xs btn-danger" href="index.php/manage/">排除</a>
+			</td>
+		</tr>
+		{/foreach}
+	{/if}
+</tbody>
+</table>
+{/block}
+

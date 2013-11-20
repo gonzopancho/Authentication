@@ -1,0 +1,57 @@
+{extends file="../layout/default.html"}
+
+{block name=content}
+<!-- 画面の大きいクライアント(デスクトップ・タブレット用) -->
+<div class="container">
+	<nav class="navbar navbar-default" role="navigation">
+		<div class="navbar-header">
+			<a class="navbar-brand">ユーザー認証</a>
+		</div>
+	</nav>
+
+	{if validation_errors()}
+	<div>
+		<h4 class="text-danger">{validation_errors()}</h4>
+	</div>
+	{/if}
+	{if $error_message}
+	<div>
+		<h4 class="text-danger">{$error_message}</h4>
+	</div>
+	{/if}
+
+	<hr>
+
+	<div class="col-sm-offset-4 col-sm-4">
+		<form class="form-signin" method="post">
+			<div style="height:40px;"></div>
+
+			<div style="margin-bottom: 4px;">
+				<span style="font-size:large;">
+					無線LANアカウント<a>詳細</a>
+				</span>
+			</div>
+
+
+			<div class="form-group {if form_error('name')}has-error{/if}" style="margin-bottom: 8px;">
+				<input type="text" name="name" class="form-control" placeholder="ユーザー名" autofocus>
+			</div>
+
+			<div class="form-group {if form_error('password')}has-error{/if}" style="margin-bottom: 8px;">
+				<input type="password" name="password" class="form-control" placeholder="パスワード" autocomplete="off">
+			</div>
+
+			<div style="margin-bottom: 30px;">
+				<div>
+					<button class="btn btn-lg btn-primary btn-block" type="submit">ログイン</button>
+				</div>
+			</div>
+
+			<div>
+				アカウントをお持ちでない場合 <a href="">新 規 登 録</a>
+			</div>
+		</form>
+	</div>
+</div>
+{/block}
+

@@ -1,0 +1,55 @@
+<!doctype html>
+
+<html lang="ja">
+	<head>
+	{block name=head}
+		{* metaタグ *}
+		{block name=meta}
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="Content-Style-Type" content="text/css">
+		<meta http-equiv="Content-Script-Type" content="text/javascript">
+		<meta name="Author" content="WISS2013ネットワークチーム">
+
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		{/block}
+
+		{* ページタイトル *}
+		<title>{block name=title}{/block}</title>
+
+		{* baseの宣言 *}
+		{block name=base nocache}
+		<base href="{site_url url=''}">
+		{/block}
+
+		{* faviconの宣言 *}
+		{block name=favicon}
+		<link rel="shortcut icon" href="image/favicon.ico">
+		{/block}
+
+		{* CSSの宣言 *}
+		{block name=style}
+		<link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
+		{/block}
+
+		{* Javascriptの宣言 *}
+		{block name=script}
+		<script src="js/jquery-2.0.2.min.js"></script>
+		<script src="js/holder.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+
+		<!-- IE8以前でもHTML5要素とメディアクエリをサポートするために、HTML5 shimとRespond.jsを読み込む -->
+		<!--[if lt IE 9]>
+			<script src="js/html5shiv.js"></script>
+			<script src="js/respond.min.js"></script>
+		<![endif]-->
+		{/block}
+	{/block}
+	</head>
+
+	<body>
+	{block name=body}
+	{/block}
+	</body>
+</html>
+

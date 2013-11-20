@@ -1,0 +1,60 @@
+{extends file="../layout/default.html"}
+
+{* ページタイトル *}
+{block name=title}端末登録{/block}
+{block name=content_title}端末登録{/block}
+
+{block name=content}
+<div class="container">
+
+<nav class="navbar navbar-default" role="navigation">
+	<div class="navbar-header">
+		<a class="navbar-brand">端末情報登録</a>
+	</div>
+
+	<ul class="nav navbar-nav navbar-right">
+		<li>
+			<form class="navbar-form">
+				<a class="btn btn-default" href="index.php/terminal/">もどる</a>
+			</form>
+		</li>
+	</ul>
+</nav>
+{if $mac_addr == False}
+	<div>
+		<h4 class="text-danger">MACアドレスを取得することが出来ませんでした。</h4>
+	</div>
+{/if}
+{if $error_message}
+	<div>
+		<h4 class="text-danger">{$error_message}</h4>
+	</div>
+{/if}
+
+<hr>
+
+{* サブミットフォーム *}
+<form class="form-horizontal" method="post">
+	<div class="form-group {if form_error('name')}has-error{/if}">
+		<label class="col-sm-4 control-label">端末名</label>
+		<div class="col-sm-4">
+			<input type="text" name="name" class="form-control" placeholder="例)Vaio, MacbookAir"  autocomplete="off" autofocus>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-4 control-label">MACアドレス</label>
+		<div class="col-sm-4">
+			<button type="text" class="form-control" disabled>{$mac_addr}</button>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<div class="col-sm-offset-4 col-sm-4">
+			<button type="submit" class="btn btn-primary btn-block">端末の登録</button>
+		</div>
+	</div>
+</form>
+</div>
+{/block}
+
