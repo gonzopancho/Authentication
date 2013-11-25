@@ -19,9 +19,32 @@ class Terminal_model extends CI_Model {
 		return $query->result();
 	}
 
+	// -テーブルのデータ取得処理---------------------------------------------
+	public function select_where_user_terminal_id($user_id, $terminal_id) {
+		// -データベースから取得-----------------------------------------
+		$query = $this->db->get_where('terminal', array(
+			'id'		=> $terminal_id,
+			'user_id'	=> $user_id
+		));
+
+		foreach ($query->result() as $terminal) {
+			return $terminal;
+		}
+
+		return False;
+	}
+
 	// -テーブルへのデータ追加処理-------------------------------------------
 	public function insert($data) {
 		return $this->db->insert('terminal', $data);
+	}
+
+	// -テーブルへのデータ消去処理-------------------------------------------
+	public function delete_where_user_terminal_id($user_id, $terminal_id) {
+		return $this->db->delete('terminal', array(
+			'id'		=> $terminal_id,
+			'user_id'	=> $user_id
+		));
 	}
 }
 ?>

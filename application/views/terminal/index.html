@@ -33,7 +33,7 @@
 <tbody>
 	{if $terminals|@count == 0}
 	<tr>
-		<td colspan="4">現在登録されている端末はありません...</td>
+		<td colspan="5">現在登録されている端末はありません...</td>
 	</tr>
 	{else}
 		{foreach from=$terminals item=terminal}
@@ -42,7 +42,10 @@
 			<td>{$terminal->name}</td>
 			<td>{$terminal->l2addr}</td>
 			<td>
-				<a class="btn btn-xs btn-danger" href="index.php/terminal/delete">消去</a>
+				<form action="index.php/terminal/delete" method="post">
+					<input type="hidden" name="terminal_id" value="{$terminal->id}">
+					<button class="btn btn-sm btn-danger btn-block" type="submit">消去</button>
+				</form>
 			</td>
 		</tr>
 		{/foreach}

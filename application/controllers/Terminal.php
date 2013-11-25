@@ -94,10 +94,11 @@ class Terminal extends CI_Controller {
 		$user_agent	= $this->input->user_agent();
 
 		/*
-		 * ARP関連処理用ライブラリ読み込み
+		 * IP, ARP関連処理用ライブラリ読み込み
 		 */
+		$this->load->library('IP');
 		$this->load->library('ARP');
-		$ip_addr	= $this->input->ip_address();
+		$ip_addr	= $this->ip->getAddress();
 		$mac_addr	= $this->arp->findMACAddress($ip_addr);
 
 		/*
@@ -148,25 +149,18 @@ class Terminal extends CI_Controller {
 
 		// OpenFlowへの書き込み処理
 		if (($isSuccess == True) && ($mac_addr == True)) {
-			// URLの作成
-			$url = sprintf('http://%s:%s/add/%s', RYUMON_HTTP_HOST, RYUMON_HTTP_PORT, $mac_addr);
+			$controllers = unserialize(RYU_CONTROLLERS);
+			for ($i = 0; $i < count($controllers); $i++) {
+				$host = $controllers[$i]['HTTP_HOST'];
+				$port = $controllers[$i]['HTTP_PORT'];
 
-			$this->load->library('curl');
-			$json_str = $this->curl->simple_get($url);
+				if ($this->writeMACAddressFlow($host, $port, $mac_addr) == False) {
+					break;
+				}
+			}
 
-			if (
-				// JSONを取得できたかどうか？
-				($json_str == True) &&
-				// JSONをデコードできたかどうか？
-				(($data = json_decode(trim($json_str), true)) == True) &&
-				// JSONの書式チェック
-				(array_key_exists('result', $data) == True) &&
-				// JSONの中身チェック
-				($data['result'] == True)
-			) {
-				// None
-			} else {
-				$error_message = 'MACアドレスの登録に失敗しました。';
+			if ($i < count($controllers)) {
+				$error_message = 'MACアドレスを登録する事ができませんでした。';
 				$isSuccess = False;
 			}
 		}
@@ -202,6 +196,105 @@ class Terminal extends CI_Controller {
 		 * ビューへデータを送信する
 		 */
 		$this->parser->parse("terminal/add.html", $data);
+	}
+
+	public function delete()
+	{
+		/*
+		 * バリデーションの設定
+		 */
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('terminal_id', '端末ID', 'required|numeric');
+
+		/*
+		 * 入力されたデータが正しい場合の処理
+		 */
+		if ($this->form_validation->run() == TRUE) {
+			/*
+			 * ユーザーIDと端末IDの取得
+			 */
+			$user_id	= $this->session->userdata('user_id');
+			$terminal_id	= $this->input->post('terminal_id');
+			/*
+			 * 端末モデルの読み込みと取得
+			 */
+			$this->load->model('terminal_model', '', True);
+			$terminal = $this->terminal_model->select_where_user_terminal_id($user_id, $terminal_id);
+			if ($terminal == True) {
+				/*
+				 * OpenFlowスイッチ内のフローエントリ削除
+				 */
+				$controllers = unserialize(RYU_CONTROLLERS);
+				for ($i = 0; $i < count($controllers); $i++) {
+					/*
+					 * ホストとポート番号の取得
+					 */
+					$host = $controllers[$i]['HTTP_HOST'];
+					$port = $controllers[$i]['HTTP_PORT'];
+
+					$this->removeMACAddressFlow($host, $port, $terminal->l2addr);
+				}
+			}
+
+			/*
+			 * データベースから消去
+			 */
+			$this->terminal_model->delete_where_user_terminal_id($user_id, $terminal_id);
+		}
+
+		redirect('terminal', 'index');
+	}
+
+	// MACアドレスの書き込み処理
+	private function writeMACAddressFlow($hostname, $port, $mac_addr) {
+		// URLの作成
+		$url = sprintf('http://%s:%s/add/%s', $hostname, $port, $mac_addr);
+		/*
+		 * Curlの読み込み
+		 */
+		$this->load->library('curl');
+		$json_str = $this->curl->simple_get($url);
+
+		if (
+			// JSONを取得できたかどうか？
+			($json_str == True) &&
+			// JSONをデコードできたかどうか？
+			(($data = json_decode(trim($json_str), true)) == True) &&
+			// JSONの書式チェック
+			(array_key_exists('result', $data) == True) &&
+			// JSONの中身チェック
+			($data['result'] == True)
+		) {
+			return True;
+		}
+
+		return False;
+	}
+
+	// MACアドレスの消去処理
+	private function removeMACAddressFlow($hostname, $port, $mac_addr) {
+		// URLの作成
+		$url = sprintf('http://%s:%s/remove/%s', $hostname, $port, $mac_addr);
+		/*
+		 * Curlの読み込み
+		 */
+		$this->load->library('curl');
+		$json_str = $this->curl->simple_get($url);
+
+		if (
+			// JSONを取得できたかどうか？
+			($json_str == True) &&
+			// JSONをデコードできたかどうか？
+			(($data = json_decode(trim($json_str), true)) == True) &&
+			// JSONの書式チェック
+			(array_key_exists('result', $data) == True) &&
+			// JSONの中身チェック
+			($data['result'] == True)
+		) {
+			return True;
+		}
+
+		return False;
 	}
 }
 
