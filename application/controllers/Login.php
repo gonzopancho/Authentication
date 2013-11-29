@@ -96,6 +96,11 @@ class Login extends CI_Controller {
 
 		$this->parser->parse("login/index.html", array('error_message' => $error_message));
 	}
+
+	public function ok()
+	{
+		$this->parser->parse("login/ok.html", NULL);
+	}
 }
 
 /* End of file welcome.php */
