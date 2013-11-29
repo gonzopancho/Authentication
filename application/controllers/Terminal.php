@@ -180,7 +180,7 @@ class Terminal extends CI_Controller {
 			$this->terminal_model->insert($send_data);
 
 			$this->load->helper('url');
-			redirect('login', 'index');
+			redirect('login', 'ok');
 		}
 
 		/*
